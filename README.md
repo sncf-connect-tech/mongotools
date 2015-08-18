@@ -11,7 +11,7 @@ Ensemble d'outils de la DT pour mongo.
 [Go](http://golang.org/) semble répondre à la plupart des critères:
 
 * Gestion du [templating](http://golang.org/pkg/text/template/)
-* Librairie mongo ([mgo](https://labix.org/mgo)) offrant beaucoup de possibilité bas et haut-niveau
+* Librairie mongo ([mgo](https://labix.org/mgo)) offrant beaucoup de possibilités bas et haut-niveau
 * Produit des exécutables autonomes qu'on peut ajouter facilement dans le _PATH_
 
 ## Tools
