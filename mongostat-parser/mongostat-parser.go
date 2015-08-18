@@ -1,68 +1,242 @@
 package main
 
 import "flag"
+
 import "fmt"
+
 import "log"
+
 import "os"
+
 import "text/template"
+
 import "encoding/json"
+
 import "io"
+
 import "strconv"
+
 import "strings"
+
 import "time"
 
 /* CLI configuration */
 
 var uri = flag.String("uri", "mongodb://localhost:27017", "mongo uri")
+
 var help = flag.Bool("help", false, "help")
+
 var verbose = flag.Bool("verbose", false, "verbose output")
+
 var tmpl = flag.String("template", "", "use a template for the output. Available information are in Oplog struct (Ts,Ns,H,V,Op,O). For instance for graphite, it could be: 'DT.my.measure {{.Ts}}  {{.Timestamp.Unix()}} '")
 
 /* Size type */
+
 type Size string
 
-func (s Size) Ko() int64 {
-	if strings.HasSuffix(string(s), "G") {
-		res, err := strconv.ParseFloat(strings.Trim(string(s), "G"), 64)
+func (s Size) Kb() int64 {
+
+	sizeSlice := []byte(string(s))
+
+	switch sizeSlice[len(sizeSlice)-1] {
+
+	case 'G', 'g':
+
+		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgBbMmKk"), 64)
+
 		if err == nil {
+
 			return int64(res * 1024 * 1024)
+
+		} else {
+
+			fmt.Println(err)
+
 		}
+
+	case 'M', 'm':
+
+		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
+
+		if err == nil {
+
+			return int64(res * 1024)
+
+		} else {
+
+			fmt.Println(err)
+
+		}
+
+	case 'K', 'k':
+
+		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
+
+		if err == nil {
+
+			return int64(res)
+
+		} else {
+
+			fmt.Println(err)
+
+		}
+
+	case 'B', 'b':
+
+		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
+
+		if err == nil {
+
+			return int64(res / 1024)
+
+		} else {
+
+			fmt.Println(err)
+
+		}
+
 	}
-	return 0
+
+	return -1
+
 }
 
-func (s Size) O() int64 {
-	if strings.HasSuffix(string(s), "G") {
-		res, err := strconv.ParseFloat(strings.Trim(string(s), "G"), 64)
+func (s Size) B() int64 {
+
+	sizeSlice := []byte(string(s))
+
+	switch sizeSlice[len(sizeSlice)-1] {
+
+	case 'G', 'g':
+
+		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgBbMmKk"), 64)
+
 		if err == nil {
+
 			return int64(res * 1024 * 1024 * 1024)
+
+		} else {
+
+			fmt.Println(err)
+
 		}
+
+	case 'M', 'm':
+
+		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
+
+		if err == nil {
+
+			return int64(res * 1024 * 1024)
+
+		} else {
+
+			fmt.Println(err)
+
+		}
+
+	case 'K', 'k':
+
+		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
+
+		if err == nil {
+
+			return int64(res * 1024)
+
+		} else {
+
+			fmt.Println(err)
+
+		}
+
+	case 'B', 'b':
+
+		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
+
+		if err == nil {
+
+			return int64(res)
+
+		} else {
+
+			fmt.Println(err)
+
+		}
+
 	}
-	return 0
+
+	return -1
+
+}
+
+/* Data with a pipe separator */
+
+type Piped string
+
+func (p Piped) Left() string {
+
+	return strings.Split(string(p), "|")[0]
+
+}
+
+func (p Piped) Right() string {
+
+	return strings.Split(string(p), "|")[1]
+
+}
+
+/* Data with potentially a star */
+
+type Starred string
+
+func (s Starred) Unstarred() string {
+
+	return strings.Trim(string(s), "*")
+
 }
 
 /* Stats structure */
+
 type Stats struct {
-	ArAw      string `json:"ar|aw"`
-	Command   string `json:command`
-	Conn      string `json:conn`
-	Delete    string `json:delete`
-	Faults    string `json:faults`
-	Flushes   string `json:flushes`
-	Getmore   string `json:getmore`
-	Host      string `json:host`
-	Insert    string `json:insert`
-	Locked    string `json:locked`
-	Mapped    string `json:mapped`
-	NetIn     string `json:netIn`
-	NetOut    string `json:netOut`
-	NonMapped string `json:"non-mapped"`
-	QrQw      string `json:"qr|qw"`
-	Query     string `json:"query"`
-	Res       string `json:"res"`
-	Time      string `json:"time"`
-	Update    string `json:"update"`
-	Vsize     Size   `json:"vsize"`
+	ArAw Piped `json:"ar|aw"`
+
+	Command Piped `json:command`
+
+	Conn Size `json:conn`
+
+	Delete Starred `json:delete`
+
+	Faults string `json:faults`
+
+	Flushes string `json:flushes`
+
+	Getmore Starred `json:getmore`
+
+	Host string `json:host`
+
+	Insert Starred `json:insert`
+
+	Locked string `json:locked`
+
+	Mapped string `json:mapped`
+
+	NetIn Size `json:netIn`
+
+	NetOut Size `json:netOut`
+
+	NonMapped Size `json:"non-mapped"`
+
+	QrQw string `json:"qr|qw"`
+
+	Query Starred `json:"query"`
+
+	Res Size `json:"res"`
+
+	Time string `json:"time"`
+
+	Update Starred `json:"update"`
+	Vsize  Size    `json:"vsize"`
 }
 
 type Output struct {
@@ -93,9 +267,21 @@ func main() {
 		if *tmpl == "" {
 			fmt.Printf("%+v\n", stats)
 		} else {
+			var err error
+			var tmplParsed *template.Template
+			if strings.HasPrefix(*tmpl, "file://") {
+				log.Printf("read template from file: %s", *tmpl)
+				tmplParsed, err = template.ParseFiles(strings.TrimPrefix(*tmpl, "file://"))
+			} else {
+				log.Printf("read template from argument: %s", *tmpl)
+				tmplParsed, err = template.New("output").Parse(*tmpl)
+			}
+			if err != nil {
+				panic(err)
+			}
+
 			for k, v := range stats {
 				log.Printf("get stat from server %s\n", k)
-				tmplParsed, _ := template.New("output").Parse(*tmpl)
 				output := Output{v, time.Now()}
 				err := tmplParsed.Execute(os.Stdout, output)
 				if err != nil {
