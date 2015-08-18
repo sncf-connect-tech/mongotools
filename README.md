@@ -2,7 +2,16 @@
 
 Ensemble d'outils de la DT pour mongo.
 
-## Mongolag
+## mongostat-lag
 
-Mesure le lag entre le master et ses slaves (cf. [README](mongolag/README.md)).
+Mesure le lag entre le master et ses slaves (cf. [README](mongostat-lag/README.md)).
+
+## mongostat-parser
+
+Parse la sortie json de mongostat et la restitue selon un template (cf. [README](mongostat-parser/README.md)).
+
+## mongooplog-window
+
+Donne la différence entre le premier et le dernier oplog. (cf. [README](mongooplog-window/README.md)).
+
 
