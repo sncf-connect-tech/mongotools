@@ -30,136 +30,91 @@ var tmpl = flag.String("template", "", "use a template for the output. Available
 
 type Size string
 
+// TODO refactor with a clever algorithm
 func (s Size) Kb() int64 {
-
 	sizeSlice := []byte(string(s))
-
 	switch sizeSlice[len(sizeSlice)-1] {
-
 	case 'G', 'g':
-
 		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgBbMmKk"), 64)
-
 		if err == nil {
-
 			return int64(res * 1024 * 1024)
-
 		} else {
-
 			fmt.Println(err)
-
 		}
-
 	case 'M', 'm':
-
 		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
-
 		if err == nil {
-
 			return int64(res * 1024)
-
 		} else {
-
 			fmt.Println(err)
-
 		}
-
 	case 'K', 'k':
-
 		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
-
 		if err == nil {
-
 			return int64(res)
-
 		} else {
-
 			fmt.Println(err)
-
 		}
-
 	case 'B', 'b':
-
 		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
-
 		if err == nil {
-
 			return int64(res / 1024)
-
 		} else {
-
 			fmt.Println(err)
-
 		}
-
+	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+		res, err := strconv.Atoi(string(s))
+		if err == nil {
+			return int64(res)
+		} else {
+			fmt.Println(err)
+		}
 	}
 
 	return -1
-
 }
 
+// TODO refactor with a clever algorithm
 func (s Size) B() int64 {
-
 	sizeSlice := []byte(string(s))
-
 	switch sizeSlice[len(sizeSlice)-1] {
-
 	case 'G', 'g':
-
 		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgBbMmKk"), 64)
-
 		if err == nil {
-
 			return int64(res * 1024 * 1024 * 1024)
-
 		} else {
-
 			fmt.Println(err)
-
 		}
-
 	case 'M', 'm':
-
 		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
-
 		if err == nil {
-
 			return int64(res * 1024 * 1024)
-
 		} else {
-
 			fmt.Println(err)
-
 		}
-
 	case 'K', 'k':
-
 		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
-
 		if err == nil {
-
 			return int64(res * 1024)
-
 		} else {
-
 			fmt.Println(err)
-
 		}
-
 	case 'B', 'b':
-
 		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
-
 		if err == nil {
-
 			return int64(res)
-
 		} else {
-
 			fmt.Println(err)
-
 		}
-
+	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+		res, err := strconv.Atoi(string(s))
+		if err == nil {
+			return int64(res)
+		} else {
+			fmt.Println(err)
+		}
+	default:
+		return -1
 	}
 
 	return -1
@@ -167,19 +122,14 @@ func (s Size) B() int64 {
 }
 
 /* Data with a pipe separator */
-
 type Piped string
 
 func (p Piped) Left() string {
-
 	return strings.Split(string(p), "|")[0]
-
 }
 
 func (p Piped) Right() string {
-
 	return strings.Split(string(p), "|")[1]
-
 }
 
 /* Data with potentially a star */
@@ -195,44 +145,26 @@ func (s Starred) Unstarred() string {
 /* Stats structure */
 
 type Stats struct {
-	ArAw Piped `json:"ar|aw"`
-
-	Command Piped `json:command`
-
-	Conn Size `json:conn`
-
-	Delete Starred `json:delete`
-
-	Faults string `json:faults`
-
-	Flushes string `json:flushes`
-
-	Getmore Starred `json:getmore`
-
-	Host string `json:host`
-
-	Insert Starred `json:insert`
-
-	Locked string `json:locked`
-
-	Mapped string `json:mapped`
-
-	NetIn Size `json:netIn`
-
-	NetOut Size `json:netOut`
-
-	NonMapped Size `json:"non-mapped"`
-
-	QrQw string `json:"qr|qw"`
-
-	Query Starred `json:"query"`
-
-	Res Size `json:"res"`
-
-	Time string `json:"time"`
-
-	Update Starred `json:"update"`
-	Vsize  Size    `json:"vsize"`
+	ArAw      Piped   `json:"ar|aw"`
+	Command   Piped   `json:command`
+	Conn      Size    `json:conn`
+	Delete    Starred `json:delete`
+	Faults    string  `json:faults`
+	Flushes   string  `json:flushes`
+	Getmore   Starred `json:getmore`
+	Host      string  `json:host`
+	Insert    Starred `json:insert`
+	Locked    string  `json:locked`
+	Mapped    string  `json:mapped`
+	NetIn     Size    `json:netIn`
+	NetOut    Size    `json:netOut`
+	NonMapped Size    `json:"non-mapped"`
+	QrQw      Piped   `json:"qr|qw"`
+	Query     Starred `json:"query"`
+	Res       Size    `json:"res"`
+	Time      string  `json:"time"`
+	Update    Starred `json:"update"`
+	Vsize     Size    `json:"vsize"`
 }
 
 type Output struct {
