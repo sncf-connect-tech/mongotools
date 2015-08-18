@@ -14,4 +14,9 @@ Parse la sortie json de mongostat et la restitue selon un template (cf. [README]
 
 Donne la différence entre le premier et le dernier oplog. (cf. [README](mongooplog-window/README.md)).
 
+## mongooplog-tail
+
+Permet de faire un tail sur les oplogs en filtrant sur certains champs et par date. (cf. [README](mongooplog-tail/README.md)).
+
+
 
