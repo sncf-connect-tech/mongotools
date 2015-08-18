@@ -22,13 +22,9 @@ import "time"
 
 /* CLI configuration */
 
-var uri = flag.String("uri", "mongodb://localhost:27017", "mongo uri")
-
 var help = flag.Bool("help", false, "help")
 
-var verbose = flag.Bool("verbose", false, "verbose output")
-
-var tmpl = flag.String("template", "", "use a template for the output. Available information are in Oplog struct (Ts,Ns,H,V,Op,O). For instance for graphite, it could be: 'DT.my.measure {{.Ts}}  {{.Timestamp.Unix()}} '")
+var tmpl = flag.String("template", "", "use a template for the output. Available information are in Output struct {Stats,Now}. Type of Now is time.Time. Stats is a custom type which contains all mongostats fields and helpers for parsing these fields. For instance '{{.Now.Unix}} {{.Stats.ArAw.Left}}' displays unix time of now and left part of 'ar|aw' mongostat metric (See README.md for more details)")
 
 /* Size type */
 

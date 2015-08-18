@@ -19,4 +19,3 @@ Donne la différence entre le premier et le dernier oplog. (cf. [README](mongoop
 Permet de faire un tail sur les oplogs en filtrant sur certains champs et par date. (cf. [README](mongooplog-tail/README.md)).
 
 
-
