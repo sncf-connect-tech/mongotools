@@ -13,7 +13,7 @@ Ensemble d'outils de la DT pour mongo.
 * Gestion du [templating](http://golang.org/pkg/text/template/)
 * Librairie mongo ([mgo](https://labix.org/mgo)) offrant beaucoup de possibilités bas et haut-niveau
 * Produit des exécutables autonomes qu'on peut ajouter facilement dans le _PATH_
-
+* les [mongotools](https://github.com/mongodb/mongo-tools) officiels de MongoInc sont aussi en go et utilise aussi la librairie mgo
 ## Tools
 
 ### mongostat-lag
