@@ -1,23 +1,15 @@
 package main
 
 import "flag"
-
 import "fmt"
-
 import "log"
-
 import "os"
-
 import "text/template"
-
 import "encoding/json"
-
 import "io"
-
+import "math"
 import "strconv"
-
 import "strings"
-
 import "time"
 
 /* CLI configuration */
@@ -30,95 +22,46 @@ var tmpl = flag.String("template", "", "use a template for the output. Available
 
 type Size string
 
-// TODO refactor with a clever algorithm
-func (s Size) Kb() int64 {
-	sizeSlice := []byte(string(s))
-	switch sizeSlice[len(sizeSlice)-1] {
-	case 'G', 'g':
-		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgBbMmKk"), 64)
-		if err == nil {
-			return int64(res * 1024 * 1024)
-		} else {
-			fmt.Println(err)
-		}
-	case 'M', 'm':
-		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
-		if err == nil {
-			return int64(res * 1024)
-		} else {
-			fmt.Println(err)
-		}
-	case 'K', 'k':
-		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
-		if err == nil {
-			return int64(res)
-		} else {
-			fmt.Println(err)
-		}
-	case 'B', 'b':
-		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
-		if err == nil {
-			return int64(res / 1024)
-		} else {
-			fmt.Println(err)
-		}
-	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-		res, err := strconv.Atoi(string(s))
-		if err == nil {
-			return int64(res)
-		} else {
-			fmt.Println(err)
-		}
-	}
-
-	return -1
+// convert Size to KB
+func (s Size) KB() int64 {
+	return int64(s.ToInt64() / 1024)
 }
 
-// TODO refactor with a clever algorithm
-func (s Size) B() int64 {
+// convert Size to MB
+func (s Size) MB() int64 {
+	return int64(s.ToInt64() / (1024 * 1024))
+}
+
+// convert Size to GB
+func (s Size) GB() int64 {
+	return int64(s.ToInt64() / (1024 * 1024 * 1024))
+}
+
+// convert string of Size to the unitary value (Size("1k").ToInt64() => 1024)
+func (s Size) ToInt64() int64 {
 	sizeSlice := []byte(string(s))
+	power := 0.0
+	res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgBbMmKk"), 64)
 	switch sizeSlice[len(sizeSlice)-1] {
 	case 'G', 'g':
-		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgBbMmKk"), 64)
-		if err == nil {
-			return int64(res * 1024 * 1024 * 1024)
-		} else {
-			fmt.Println(err)
-		}
+		power = 3.0
 	case 'M', 'm':
-		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
-		if err == nil {
-			return int64(res * 1024 * 1024)
-		} else {
-			fmt.Println(err)
-		}
+		power = 2.0
 	case 'K', 'k':
-		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
-		if err == nil {
-			return int64(res * 1024)
-		} else {
-			fmt.Println(err)
-		}
+		power = 1.0
 	case 'B', 'b':
-		res, err := strconv.ParseFloat(strings.Trim(string(sizeSlice[:len(sizeSlice)]), "GgbBMmKk"), 64)
-		if err == nil {
-			return int64(res)
-		} else {
-			fmt.Println(err)
-		}
+		power = 0.0
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-		res, err := strconv.Atoi(string(s))
-		if err == nil {
-			return int64(res)
-		} else {
-			fmt.Println(err)
-		}
+		power = 0.0
 	default:
-		return -1
+		err = fmt.Errorf("can't find type of Size %v", s)
 	}
-
+	if err == nil {
+		return int64(res * math.Pow(1024.0, float64(power)))
+	} else {
+		fmt.Println(err)
+	}
 	return -1
-
 }
 
 /* Data with a pipe separator */
@@ -155,7 +98,7 @@ type Stats struct {
 	Host      string  `json:host`
 	Insert    Starred `json:insert`
 	Locked    string  `json:locked`
-	Mapped    string  `json:mapped`
+	Mapped    Size    `json:mapped`
 	NetIn     Size    `json:netIn`
 	NetOut    Size    `json:netOut`
 	NonMapped Size    `json:"non-mapped"`
