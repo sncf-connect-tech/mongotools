@@ -14,8 +14,8 @@ import (
 	"strings"
 	"sync"
 
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	"mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2"
+	"mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2/bson"
 
 	crand "crypto/rand"
 	mrand "math/rand"

@@ -34,8 +34,8 @@ import (
 	"fmt"
 	"sync"
 
-	"gopkg.in/mgo.v2/bson"
-	"gopkg.in/mgo.v2/internal/scram"
+	"mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2/bson"
+	"mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2/internal/scram"
 )
 
 type authCmd struct {

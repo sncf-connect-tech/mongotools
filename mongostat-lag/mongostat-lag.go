@@ -1,7 +1,7 @@
 package main
 
-import "gopkg.in/mgo.v2"
-import "gopkg.in/mgo.v2/bson"
+import "mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2"
+import "mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2/bson"
 import "fmt"
 import "flag"
 import "log"
