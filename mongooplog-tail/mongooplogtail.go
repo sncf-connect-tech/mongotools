@@ -62,11 +62,11 @@ func main() {
 	if *ns != "" {
 		query["ns"] = *ns
 	}
-	
+
 	if *op != "" {
 		query["op"] = *op
 	}
-	
+
 	if *sd > 0 {
 		// byte buffer for storing timestamp and inc parts of special Mongo timestamp => for ex. Timestamp(1437386925, 1)
 		// see http://bsonspec.org/spec.html
