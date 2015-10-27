@@ -3,8 +3,8 @@ package txn
 import (
 	"fmt"
 
-	"mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2"
-	"mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2/bson"
+	"com/vsct/dt/mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2"
+	"com/vsct/dt/mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2/bson"
 )
 
 func flush(r *Runner, t *transaction) error {

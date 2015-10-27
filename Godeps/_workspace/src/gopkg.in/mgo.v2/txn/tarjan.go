@@ -1,7 +1,7 @@
 package txn
 
 import (
-	"mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2/bson"
+	"com/vsct/dt/mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2/bson"
 	"sort"
 )
 

@@ -2,8 +2,8 @@ package main
 
 import "bytes"
 import "encoding/binary"
-import "mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2"
-import "mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2/bson"
+import "com/vsct/dt/mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2"
+import "com/vsct/dt/mongotools/Godeps/_workspace/src/gopkg.in/mgo.v2/bson"
 import "fmt"
 import "time"
 import "flag"
