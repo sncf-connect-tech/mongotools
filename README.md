@@ -4,7 +4,7 @@ Mongo tools used at VSCT.
 
 ## Guidelines
 
-* [Unix-styler](http://www.catb.org/esr/writings/taoup/html/ch01s06.html)
+* [Unix philosophy](http://www.catb.org/esr/writings/taoup/html/ch01s06.html)
 * [Go](http://golang.org/) has development language. The main reasons are: 
   * use [templating](http://golang.org/pkg/text/template/) for output allows to be agnostic on the format
   * [mgo](https://labix.org/mgo), the go driver, is popular and offer high and low level accesses to mongo api
