@@ -37,14 +37,17 @@ type Oplog struct {
 
 ```
 
-* TsRaw: raw format of the oplog timestamp. The timestamp contains the timestamp by second and an increment. Example: `{Kind:17 Data:[1 0 0 0 34 127 19 86]}`
-* Ns: the namespace of the operation. Example: `test.test`
-* V: version of the operation
-* Op: type of operation (i for insert, u for update ...)
-* O: operation content. For example: `map[test:test _id:ObjectIdHex("56137f39b37ea91354657c4a")]`
-* TsDateTime: conversion of TsRaw in `time.Time`
-* TsIncr: conversion of the incrment in `int32`
-* CurrentTime: current time in `time.Time`
+| Name | Description | Example |
+| ----- | --------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| TsRaw | raw format of the oplog timestamp. The timestamp contains the timestamp by second and an increment | `{Kind:17 Data:[1 0 0 0 34 127 19 86]}` |
+| Ns | the namespace of the operation | `test.test` |
+| V | version of the operation |  |
+| Op | type of operation (i for insert, u for update ...) |  |
+| O | operation content | `map[test:test _id:ObjectIdHex("56137f39b37ea91354657c4a")]` | 
+| TsDateTime | conversion of TsRaw in `time.Time` | | 
+| TsIncr | conversion of the incrment in `int32` | |  
+| CurrentTime | current time in `time.Time` | |
+
 
 ## examples
 
