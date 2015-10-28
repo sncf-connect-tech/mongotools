@@ -11,28 +11,25 @@ import "log"
 import "os"
 import "text/template"
 
-/* CLI configuration */
-
+// CLI configuration
 var uri = flag.String("uri", "mongodb://localhost:27017", "mongo uri")
 var ns = flag.String("namespace", "", "namespace of oplog (for instance 'mydb.mycoll'). By default is empty, so there is no filtering.")
 var op = flag.String("operation", "", "show only these operations of oplog (for instance 'c','i','u' etc...). By default is empty, so there is no filtering.")
 var sd = flag.Int("startdate", -1, "timestamp of the start date. Timestamp in seconds as stored in oplog.")
-var si = flag.Int("startincr", 0, "timestamp of the start date. Increment part of the timestam as stored in oplog. By default is 0. If stardate is not setted, this parameter is mute.")
+var si = flag.Int("startincr", 0, "timestamp of the start date. Increment part of the timestamp as stored in oplog. By default is 0. If stardate is not setted, this parameter is mute.")
 var timeout = flag.Int64("timeout", -1, "timeout in seconds. Beyond this timeout without new oplog, the process returns. By default -1 (disable timeout).")
 var help = flag.Bool("help", false, "help")
-var verbose = flag.Bool("verbose", false, "verbose output")
-var tmpl = flag.String("template", "", "use a template for the output. Available information are in Oplog struct (Ts,Ns,H,V,Op,O). For instance for graphite, it could be: 'DT.my.measure {{.Ts}}  {{.Timestamp.Unix()}} '")
+var tmpl = flag.String("template", "", "use a template for the output. Available information are in a struct. For instance for graphite, it could be: 'DT.my.measure {{.Ts}}  {{.Timestamp.Unix}} '. Type struct is: TsRaw bson.Raw, Ns string, H int64, V int, Op string, O map[string]interface{}, TsDateTime time.Time, TsIncr int32, CurrentTime time.Time")
 
-/* Oplog structure */
+// Oplog struct
 type Oplog struct {
-	TsRaw bson.Raw "ts"
-	//	Ts    bson.MongoTimestamp    "ts"
+	TsRaw       bson.Raw               "ts"
 	Ns          string                 "ns"
 	H           int64                  "h"
 	V           int                    "v"
 	Op          string                 "op"
 	O           map[string]interface{} "o"
-	TsDatetime  time.Time
+	TsDateTime  time.Time
 	TsIncr      int32
 	CurrentTime time.Time
 }
@@ -41,7 +38,7 @@ func main() {
 
 	flag.Parse()
 	if *help {
-		fmt.Fprintf(os.Stderr, "Tail on oplog.\nUsage mongooplogtail\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Tail on oplog.\nUsage: $ mongooplogtail\n%v\n", os.Args[0])
 		flag.PrintDefaults()
 		return
 	}
@@ -95,7 +92,7 @@ func main() {
 			buff = bytes.NewReader(tsSlice[:4])
 			binary.Read(buff, binary.LittleEndian, &incPart)
 
-			result.TsDatetime = time.Unix(int64(tsPart), 0)
+			result.TsDateTime = time.Unix(int64(tsPart), 0)
 			result.TsIncr = incPart
 
 			if *tmpl == "" {

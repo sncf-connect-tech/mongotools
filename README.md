@@ -1,25 +1,19 @@
 # Mongo tools
 
-Ensemble d'outils de la DT pour mongo.
+Mongo tools used at VSCT.
 
-## Cahier des charges
+## Guidelines
 
-* Unix-style: chaque outil doit faire une et une seule chose, les outils pouvant se composer entre eux ou avec les outils mongo existants (mongostat, mongotop, mongo etc...) à l'aide de pipe unix
-* Output-agnostic: on doit facilement customiser la sortie (csv, format graphite, etc...)
-* No runtime dependency: on ne doit pas dépendre de l'installation d'un runtime (jdk, python etc...)
-
-[Go](http://golang.org/) semble répondre à la plupart des critères:
-
-* Gestion du [templating](http://golang.org/pkg/text/template/)
-* Librairie mongo ([mgo](https://labix.org/mgo)) offrant beaucoup de possibilités bas et haut-niveau
-* Produit des exécutables autonomes qu'on peut ajouter facilement dans le _PATH_
-* les [mongotools](https://github.com/mongodb/mongo-tools) officiels de MongoInc sont aussi en go et utilise aussi la librairie mgo
+* [Unix-styler](http://www.catb.org/esr/writings/taoup/html/ch01s06.html)
+* [Go](http://golang.org/) has development language. The main reasons are: 
+  * use [templating](http://golang.org/pkg/text/template/) for output allows to be agnostic on the format
+  * [mgo](https://labix.org/mgo), the go driver, is popular and offer high and low level accesses to mongo api
+  * ease to deploy on any platform
 
 ## Requirements
 
-Installation de `go` et du `$GOPATH`.
-
-Installation de `godep`:
+* [installation de go](https://golang.org/doc/install) et du `$GOPATH`, configure the [workspace](https://golang.org/doc/code.html)
+* use [godep](http://github.com/tools/godep) for dependencies management:
 
 ```
 $ go get github.com/tools/godep
@@ -39,16 +33,16 @@ $ ls bin/
 
 ### mongostat-lag
 
-Mesure le lag entre le master et ses slaves (cf. [README](mongostat-lag/README.md)).
+Compute the lag between master and slaves (cf. [README](mongostat-lag/README.md)).
 
 ### mongostat-parser
 
-Parse la sortie json de mongostat et la restitue selon un template (cf. [README](mongostat-parser/README.md)).
+Parses json output of mongostat and returns in according to a template (cf. [README](mongostat-parser/README.md)).
 
 ### mongooplog-window
 
-Donne la différence entre le premier et le dernier oplog. (cf. [README](mongooplog-window/README.md)).
+Give the oplog time window between first and last oplog (cf. [README](mongooplog-window/README.md)).
 
 ### mongooplog-tail
 
-Permet de faire un tail sur les oplogs en filtrant sur certains champs et par date. (cf. [README](mongooplog-tail/README.md)).
+A tail on oplog collection with common feature of a `tail` as filtering (cf. [README](mongooplog-tail/README.md)).
