@@ -130,7 +130,6 @@ func main() {
 	for {
 		var stats map[string]Stats
 		if err := dec.Decode(&stats); err == io.EOF {
-			fmt.Printf("ok")
 			break
 		} else if err != nil {
 			log.Fatal(err)
