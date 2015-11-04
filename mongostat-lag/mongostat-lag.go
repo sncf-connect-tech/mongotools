@@ -20,23 +20,23 @@ var help = flag.Bool("help", false, "help")
 
 /* ReplicaInfo structure */
 type ServerInfo struct {
-	Name         string              "name"
-	Optime       bson.MongoTimestamp "optime"
-	OptimeDate   time.Time           "optimeDate"
-	State        int                 "state"
-	StateStr     string              "stateStr"
-	PingMs       int                 "pingMs"
-	ElectionDate time.Time           "electionDate"
-	Health       int                 "health"
-	Uptime       int64               "uptime"
+	Name         string              `bson:"name"`
+	Optime       bson.MongoTimestamp `bson:"optime"`
+	OptimeDate   time.Time           `bson:"optimeDate"`
+	State        int                 `bson:"state"`
+	StateStr     string              `bson:"stateStr"`
+	PingMs       int                 `bson:"pingMs"`
+	ElectionDate time.Time           `bson:"electionDate"`
+	Health       int                 `bson:"health"`
+	Uptime       int64               `bson:"uptime"`
 	Lag          time.Duration
 	Timestamp    time.Time
 }
 
 type ReplicaInfo struct {
-	Date    time.Time    "date"
-	MyState int          "myState"
-	Members []ServerInfo "members"
+	Date    time.Time    `json:"date"`
+	MyState int          `json:"myState"`
+	Members []ServerInfo `json:"members"`
 }
 
 func main() {
@@ -69,7 +69,7 @@ func main() {
 
 	// Execute the command mongo
 	currentTime := time.Now()
-	err := db.Run(bson.D{{"replSetGetStatus", 1}}, &result)
+	err := db.Run(bson.D{{`bson:"replSetGetStatus"`, 1}}, &result)
 	if err != nil {
 		log.Printf("err %v\n", err)
 		return

@@ -89,18 +89,18 @@ func (s Starred) Unstarred() string {
 
 type Stats struct {
 	ArAw      Piped   `json:"ar|aw"`
-	Command   Piped   `json:command`
-	Conn      Size    `json:conn`
-	Delete    Starred `json:delete`
-	Faults    string  `json:faults`
-	Flushes   string  `json:flushes`
-	Getmore   Starred `json:getmore`
-	Host      string  `json:host`
-	Insert    Starred `json:insert`
-	Locked    string  `json:locked`
-	Mapped    Size    `json:mapped`
-	NetIn     Size    `json:netIn`
-	NetOut    Size    `json:netOut`
+	Command   Piped   `json:"command"`
+	Conn      Size    `json:"conn"`
+	Delete    Starred `json:"delete"`
+	Faults    string  `json:"faults"`
+	Flushes   string  `json:"flushes"`
+	Getmore   Starred `json:"getmore"`
+	Host      string  `json:"host"`
+	Insert    Starred `json:"insert"`
+	Locked    string  `json:"locked"`
+	Mapped    Size    `json:"mapped"`
+	NetIn     Size    `json:"netIn"`
+	NetOut    Size    `json:"netOut"`
 	NonMapped Size    `json:"non-mapped"`
 	QrQw      Piped   `json:"qr|qw"`
 	Query     Starred `json:"query"`
@@ -119,7 +119,7 @@ func main() {
 
 	flag.Parse()
 	if *help {
-		fmt.Fprintf(os.Stderr, "Parse mongostat json format.\nUsage mongostat-parser [options]\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Parse mongostat json format.\nUsage mongostat-parser [options]\nCurrent usage: %v\n", os.Args[0])
 		flag.PrintDefaults()
 		return
 	}

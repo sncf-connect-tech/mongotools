@@ -23,12 +23,12 @@ var tmpl = flag.String("template", "", "use a template for the output. Available
 
 // Oplog struct
 type Oplog struct {
-	TsRaw       bson.Raw               "ts"
-	Ns          string                 "ns"
-	H           int64                  "h"
-	V           int                    "v"
-	Op          string                 "op"
-	O           map[string]interface{} "o"
+	TsRaw       bson.Raw               `bson:"ts"`
+	Ns          string                 `bson:"ns"`
+	H           int64                  `bson:"h"`
+	V           int                    `bson:"v"`
+	Op          string                 `bson:"op"`
+	O           map[string]interface{} `bson:"o"`
 	TsDateTime  time.Time
 	TsIncr      int32
 	CurrentTime time.Time
@@ -80,6 +80,7 @@ func main() {
 	}
 
 	iter = c.Find(query).Sort("$natural").Tail(time.Duration(*timeout) * time.Second)
+	defer iter.Close()
 	for {
 		result := Oplog{}
 		for iter.Next(&result) {
@@ -116,5 +117,4 @@ func main() {
 			return
 		}
 	}
-	iter.Close()
 }

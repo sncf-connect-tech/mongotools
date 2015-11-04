@@ -20,7 +20,7 @@ var tmpl = flag.String("template", "", "use a template for the output. The type 
 
 /* Oplog structure */
 type Oplog struct {
-	TsRaw bson.Raw "ts"
+	TsRaw bson.Raw `bson:"ts"`
 }
 
 type Output struct {
@@ -44,7 +44,7 @@ func main() {
 
 	flag.Parse()
 	if *help {
-		fmt.Fprintf(os.Stderr, "Window of the oplog (time of last oplog - time of first oplog).\nUsage:\n$ mongooplog-window [options]\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Window of the oplog (time of last oplog - time of first oplog).\nUsage:\n$ mongooplog-window [options]\nGiven arguments: %v\n", os.Args[0])
 		flag.PrintDefaults()
 		return
 	}
