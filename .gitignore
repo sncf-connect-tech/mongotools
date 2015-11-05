@@ -1,0 +1,5 @@
+mongooplog-tail/mongooplog-tail
+mongooplog-window/mongooplog-window
+mongostat-parser/mongostat-parser
+tmp/
+build/
