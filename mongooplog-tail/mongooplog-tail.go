@@ -194,6 +194,4 @@ func main() {
 
 	}
 
-	iter.Close()
-
 }
