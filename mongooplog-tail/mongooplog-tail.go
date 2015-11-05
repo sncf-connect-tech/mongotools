@@ -41,22 +41,14 @@ var tmpl = flag.String("template", "", "use a template for the output. Available
 // Oplog struct
 
 type Oplog struct {
-	TsRaw bson.Raw "ts"
-
-	Ns string "ns"
-
-	H int64 "h"
-
-	V int "v"
-
-	Op string "op"
-
-	O map[string]interface{} "o"
-
-	TsDateTime time.Time
-
-	TsIncr int32
-
+	TsRaw       bson.Raw               `bson:"ts"`
+	Ns          string                 `bson:"ns"`
+	H           int64                  `bson:"h"`
+	V           int                    `bson:"v"`
+	Op          string                 `bson:"op"`
+	O           map[string]interface{} `bson:"o"`
+	TsDateTime  time.Time
+	TsIncr      int32
 	CurrentTime time.Time
 }
 
