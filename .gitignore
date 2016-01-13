@@ -3,3 +3,4 @@ mongooplog-window/mongooplog-window
 mongostat-parser/mongostat-parser
 tmp/
 build/
+.idea
