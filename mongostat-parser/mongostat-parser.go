@@ -85,29 +85,58 @@ func (s Starred) Unstarred() string {
 
 }
 
+type NodeType string
+
+func (s NodeType) ToInt() int {
+	nodeType := 0
+	switch s {
+	case "PRI": // Value retrieved from real life, not included in doc
+		nodeType = 1
+	case "M": // Values from doc
+		nodeType = 2
+	case "SEC":
+		nodeType = 3
+	case "REC":
+		nodeType = 4
+	case "UNK":
+		nodeType = 5
+	case "SLV":
+		nodeType = 6
+	case "RTR":
+		nodeType = 7
+	case "ARB":
+		nodeType = 8
+	default:
+		nodeType = 5
+	}
+
+	return nodeType
+}
+
 /* Stats structure */
 
 type Stats struct {
-	ArAw      Piped   `json:"ar|aw"`
-	Command   Piped   `json:"command"`
-	Conn      Size    `json:"conn"`
-	Delete    Starred `json:"delete"`
-	Faults    string  `json:"faults"`
-	Flushes   string  `json:"flushes"`
-	Getmore   Starred `json:"getmore"`
-	Host      string  `json:"host"`
-	Insert    Starred `json:"insert"`
-	Locked    string  `json:"locked"`
-	Mapped    Size    `json:"mapped"`
-	NetIn     Size    `json:"netIn"`
-	NetOut    Size    `json:"netOut"`
-	NonMapped Size    `json:"non-mapped"`
-	QrQw      Piped   `json:"qr|qw"`
-	Query     Starred `json:"query"`
-	Res       Size    `json:"res"`
-	Time      string  `json:"time"`
-	Update    Starred `json:"update"`
-	Vsize     Size    `json:"vsize"`
+	ArAw      Piped    `json:"ar|aw"`
+	Command   Piped    `json:"command"`
+	Conn      Size     `json:"conn"`
+	Delete    Starred  `json:"delete"`
+	Faults    string   `json:"faults"`
+	Flushes   string   `json:"flushes"`
+	Getmore   Starred  `json:"getmore"`
+	Host      string   `json:"host"`
+	Insert    Starred  `json:"insert"`
+	Locked    string   `json:"locked"`
+	Mapped    Size     `json:"mapped"`
+	NetIn     Size     `json:"netIn"`
+	NetOut    Size     `json:"netOut"`
+	NonMapped Size     `json:"non-mapped"`
+	QrQw      Piped    `json:"qr|qw"`
+	Query     Starred  `json:"query"`
+	Res       Size     `json:"res"`
+	Time      string   `json:"time"`
+	Update    Starred  `json:"update"`
+	Vsize     Size     `json:"vsize"`
+	NodeType  NodeType `json:"repl"`
 }
 
 type Output struct {
