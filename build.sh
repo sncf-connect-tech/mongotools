@@ -60,7 +60,7 @@ do
 shift
 done
 
-if [ "true" -eq $SKIP_BUILD ];
+if [[ "true" -eq $SKIP_BUILD ]];
 then
 	#tools="mongooplog-tail mongooplog-window mongostat-lag mongostat-parser"
 	#arch="386 amd64"
@@ -84,8 +84,8 @@ then
 	done;
 fi
 
-cd build
-tar zvcf mongotools.tar.gz *
+cd build/linux/386
+tar zvcf ../../mongotools.tar.gz *
 cd -
 echo "end of build: ./mongotools.tar.gz"
 
