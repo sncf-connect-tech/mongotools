@@ -113,6 +113,16 @@ func (s NodeType) ToInt() int {
 	return nodeType
 }
 
+type Float string
+
+func (s Float) ToInt() int {
+	r, err := strconv.ParseFloat(string(s), 32)
+	if err != nil {
+		panic(err)
+	}
+	return int(r)
+}
+
 /* Stats structure */
 
 type Stats struct {
@@ -137,6 +147,8 @@ type Stats struct {
 	Update    Starred  `json:"update"`
 	Vsize     Size     `json:"vsize"`
 	NodeType  NodeType `json:"repl"`
+	Dirty     Float    `json:"% dirty"`
+	Used      Float    `json:"% used"`
 }
 
 type Output struct {
