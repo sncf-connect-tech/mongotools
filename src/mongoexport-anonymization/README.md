@@ -35,9 +35,9 @@
           	number of writers (default 40)
 
 
-# example simple
+# simple example
 
 
-     $ ./mongo-export --limit 10000 --uri mongodb://mdbrooe1:mdbrooe1@quadrelle:27017/BEROO01 -database BEROO01 --output results --collection order --pages 4
+     $ ./mongo-export --limit 10000 --uri mongodb://user:password@servername:27017 -database database --output results --collection col1 --pages 4
      
 

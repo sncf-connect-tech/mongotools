@@ -38,7 +38,7 @@ var (
 	pages         = flag.Int("pages", 1, "number of parallel mongo queries. For each page query, limit will be 'limit/pages'.")
 	batch         = flag.Int("batch", 100, "batch size for mongo requests")
 	prefetch      = flag.Float64("prefetch", 0.5, "prefetch ratio from batch for mongo requests")
-	output        = flag.String("output", "./", "path to output directory")
+	output        = flag.String("output", "./results/", "path to output directory")
 	prefix        = flag.String("prefix", "export-", "prefix of result files")
 	help          = flag.Bool("help", false, "help")
 	counters      = &counter{iterations:0, unmarshalledDocs:0, writedDocs:0}

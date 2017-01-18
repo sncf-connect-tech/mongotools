@@ -12,47 +12,19 @@ Mongo tools used at VSCT.
 
 ## Requirements
 
-* [installation de go](https://golang.org/doc/install) et du `$GOPATH`, configure the [workspace](https://golang.org/doc/code.html)
-* use [godep](http://github.com/tools/godep) for dependencies management:
-
-```
-$ go get github.com/tools/godep
-```
+* [go installation](https://golang.org/doc/install)
 
 
 ## Build
 
-### Using current $GOPATH
-```
-$ git clone git@gitlab.socrate.vsct.fr:dt/mongotools.git $GOPATH/src/com/vsct/dt/mongotools
-$ cd $GOPATH
-$ go install com/vsct/dt/mongotools/...
-$ ls bin/ 
-```
 
-### Build a future release
-
-```
-$ ./build.sh
-$ tree build/
-build/
-├── git-hash
-├── linux
-│   └── 386
-│       ├── mongooplog-tail
-│       ├── mongooplog-window
-│       ├── mongostat-lag
-│       └── mongostat-parser
-└── mongotools.tar.gz
-
-2 directories, 6 files 
-```
-
-### Build and deploy to nexus
-
-```
-$ ./build.sh -r $VERSION -n http://nexus/service/local/artifact/maven/content -nu <user> -np <password> -nr dt-releases
-```
+### Build 
+    
+    $ GOPATH=$PWD go build mongostat-parser 
+    $ GOPATH=$PWD go build mongostat-lag 
+    $ GOPATH=$PWD go build mongooplog-window 
+    $ GOPATH=$PWD go build mongooplog-tail 
+    $ GOPATH=$PWD go build mongoexport-anonymization 
 
 ## Tools
 
@@ -71,3 +43,7 @@ Give the oplog time window between first and last oplog (cf. [README](mongooplog
 ### mongooplog-tail
 
 A tail on oplog collection with common feature of a `tail` as filtering (cf. [README](mongooplog-tail/README.md)).
+
+### mongoexport-anonymization
+
+Anonymize documents and export them to file or other collection (cf. [README](mongoexport-anonymization/README.md)).
