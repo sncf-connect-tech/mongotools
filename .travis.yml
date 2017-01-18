@@ -1,0 +1,12 @@
+language: go
+go:
+  - 1.7
+script:
+  - go build mongooplog-tail
+  - go build mongooplog-window
+  - go build mongostat-collection
+  - go build mongostat-lag
+  - go build mongostat-parser
+  - go build mongoexport-anonymization
+install:
+  - export GOPATH="${TRAVIS_BUILD_DIR}"
