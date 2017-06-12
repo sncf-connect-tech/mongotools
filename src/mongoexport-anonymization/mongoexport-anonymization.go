@@ -54,60 +54,56 @@ func replaceIfPresent(element bson.M, field string, value string) {
 	}
 }
 
-func filter() {
+func filter(unfilteredDoc bson.M) {
 
-	for unfilteredDoc := range allChannels.inUnmarshalledDocs {
-		if customers, ok := unfilteredDoc["customers"]; ok {
-			for _, customer := range customers.([]interface{}) {
-				replaceIfPresent(customer.(bson.M), "iuc", "xxx")
-				replaceIfPresent(customer.(bson.M), "firstname", "prenom")
-				replaceIfPresent(customer.(bson.M), "name", "nom")
+	if customers, ok := unfilteredDoc["customers"]; ok {
+		for _, customer := range customers.([]interface{}) {
+			replaceIfPresent(customer.(bson.M), "iuc", "xxx")
+			replaceIfPresent(customer.(bson.M), "firstname", "prenom")
+			replaceIfPresent(customer.(bson.M), "name", "nom")
+		}
+	}
+
+	for _, serviceItem := range unfilteredDoc["serviceItems"].([]interface{}) {
+
+		if contact, ok := serviceItem.(bson.M)["contactInformation"]; ok {
+			fields := []string{"firstname", "name", "address1", "address2", "address3", "address4", "city", "zipCode", "country", "mobilePhoneNumber", "emailAddress"}
+			for _, field := range fields {
+				replaceIfPresent(contact.(bson.M), field, field)
 			}
+			replaceIfPresent(contact.(bson.M), "mobilePhoneNumber", "0123456789")
+			replaceIfPresent(contact.(bson.M), "emailAddress", "toto@toto.fr")
+			contact.(bson.M)["landlinePhoneNumbers"] = nil
 		}
 
-		for _, serviceItem := range unfilteredDoc["serviceItems"].([]interface{}) {
-
-			if contact, ok := serviceItem.(bson.M)["contactInformation"]; ok {
-				fields := []string{"firstname", "name", "address1", "address2", "address3", "address4", "city", "zipCode", "country", "mobilePhoneNumber", "emailAddress"}
+		if passengers, ok := serviceItem.(bson.M)["passengers"]; ok {
+			for _, passenger := range passengers.([]interface{}) {
+				fields := []string{"iuc", "firstName", "lastName", "mobilePhoneNumber", "emailAddress", "fceNumber", "mrcNumber"}
 				for _, field := range fields {
-					replaceIfPresent(contact.(bson.M), field, field)
+					replaceIfPresent(passenger.(bson.M), field, "xxx")
 				}
-				replaceIfPresent(contact.(bson.M), "mobilePhoneNumber", "0123456789")
-				replaceIfPresent(contact.(bson.M), "emailAddress", "toto@toto.fr")
-				contact.(bson.M)["landlinePhoneNumbers"] = nil
-			}
-
-			if passengers, ok := serviceItem.(bson.M)["passengers"]; ok {
-				for _, passenger := range passengers.([]interface{}) {
-					fields := []string{"iuc", "firstName", "lastName", "mobilePhoneNumber", "emailAddress", "fceNumber", "mrcNumber"}
-					for _, field := range fields {
-						replaceIfPresent(passenger.(bson.M), field, "xxx")
-					}
-					passenger.(bson.M)["emailAddress"] = "toto@toto.fr"
-					passenger.(bson.M)["mobilePhoneNumber"] = "0123456789"
-					if clientInformation, ok := passenger.(bson.M)["cilentCardNumber"]; ok {
-						replaceIfPresent(clientInformation.(bson.M), "fidNumber", "xxx")
-					}
-					if cilentCardNumber, ok := passenger.(bson.M)["clientCard"]; ok {
-						replaceIfPresent(cilentCardNumber.(bson.M), "cardNumber", "xxx")
-					}
-					if sncfAgentAddritionalProperties, ok := passenger.(bson.M)["sncfAgentAddritionalProperties"]; ok {
-						replaceIfPresent(sncfAgentAddritionalProperties.(bson.M), "agentId", "xxx")
-					}
+				passenger.(bson.M)["emailAddress"] = "toto@toto.fr"
+				passenger.(bson.M)["mobilePhoneNumber"] = "0123456789"
+				if clientInformation, ok := passenger.(bson.M)["cilentCardNumber"]; ok {
+					replaceIfPresent(clientInformation.(bson.M), "fidNumber", "xxx")
 				}
-			}
-
-			if railTransportationContracts, ok := serviceItem.(bson.M)["railTransportationContracts"]; ok {
-				for _, contract := range railTransportationContracts.([]interface{}) {
-					if holder, ok := contract.(bson.M)["holder"]; ok {
-						replaceIfPresent(holder.(bson.M), "firstName", "prenom")
-						replaceIfPresent(holder.(bson.M), "lastName", "nom")
-					}
+				if cilentCardNumber, ok := passenger.(bson.M)["clientCard"]; ok {
+					replaceIfPresent(cilentCardNumber.(bson.M), "cardNumber", "xxx")
+				}
+				if sncfAgentAddritionalProperties, ok := passenger.(bson.M)["sncfAgentAddritionalProperties"]; ok {
+					replaceIfPresent(sncfAgentAddritionalProperties.(bson.M), "agentId", "xxx")
 				}
 			}
 		}
 
-		allChannels.filters <- unfilteredDoc
+		if railTransportationContracts, ok := serviceItem.(bson.M)["railTransportationContracts"]; ok {
+			for _, contract := range railTransportationContracts.([]interface{}) {
+				if holder, ok := contract.(bson.M)["holder"]; ok {
+					replaceIfPresent(holder.(bson.M), "firstName", "prenom")
+					replaceIfPresent(holder.(bson.M), "lastName", "nom")
+				}
+			}
+		}
 	}
 }
 
@@ -123,21 +119,7 @@ func unmarshall(index int) {
 	panic("shouldn't stop to unmarshall documents")
 }
 
-func write(index int) {
-	fmt.Printf("start writing step: %v\n", index)
-	os.Mkdir(*output, os.ModeDir)
-	out, _ := os.Create(*output + string(filepath.Separator) + *prefix + strconv.Itoa(index) + ".json")
-	defer out.Close()
-	enc := json.NewEncoder(out)
-	for d := range allChannels.filters {
-		enc.Encode(&d)
-		counters.writedDocs++
-	}
-	fmt.Printf("encoded %v\n", index)
-	out.Sync()
-}
-
-func display() {
+func monitor() {
 	oldCounter := &counter{writedDocs: counters.writedDocs, iterations: counters.iterations, unmarshalledDocs: counters.unmarshalledDocs}
 	for {
 		currentCounter := &counter{writedDocs: counters.writedDocs, iterations: counters.iterations, unmarshalledDocs: counters.unmarshalledDocs}
@@ -151,32 +133,36 @@ func display() {
 	}
 }
 
-func iterate2(iter *mgo.Iter, page int) {
-	var currentRaw *bson.Raw
-	currentRaw = <-allChannels.inRaws
-	for iter.Next(currentRaw) {
-		counters.iterations++
-		allChannels.outRaws <- currentRaw
-		currentRaw = <-allChannels.inRaws
-	}
-	allChannels.pages <- true
-	fmt.Printf("end of mongo page %d \n", page)
-}
-
-func iterate() {
+func iterate(page int) {
 	pageLimit := *limit / *pages
 	lastId := <-allChannels.lastIds
-	fmt.Printf("start iteration from id: %s\n", lastId)
+	fmt.Printf("start iteration from mongo _id: %s\n", lastId)
 	db := createDB()
 	iter := db.C(*coll).Find(bson.M{"_id": bson.M{"$gte": lastId}}).Prefetch(*prefetch).Batch(*batch).Sort("_id").Limit(pageLimit).Iter()
 
+	// create output file for this index
+	fileName := *output + string(filepath.Separator) + *prefix + strconv.Itoa(page) + ".json"
+	fmt.Printf("will write to file %s\n", fileName)
+	os.Mkdir(*output, os.ModeDir)
+	out, _ := os.Create(fileName)
+	enc := json.NewEncoder(out)
+	defer out.Sync()
+	defer out.Close()
+
 	var currentRaw bson.Raw
+	var unmarshalledDoc bson.M
+	itCnt := 0
 	for iter.Next(&currentRaw) {
+		itCnt++
 		counters.iterations++
-		allChannels.outRaws <- &currentRaw
+		// unmarshal
+		currentRaw.Unmarshal(&unmarshalledDoc)
+		filter(unmarshalledDoc)
+		enc.Encode(&unmarshalledDoc)
 	}
+
 	allChannels.pages <- true
-	fmt.Printf("end of mongo page %s \n", lastId)
+	fmt.Printf("%d iteration(s) from id %s \n", itCnt, lastId)
 
 }
 
@@ -228,24 +214,10 @@ func main() {
 	allChannels.pages = make(chan bool)
 	allChannels.lastIds = make(chan string, *pages)
 
-	for index := 0; index < *unmarshallers; index++ {
-		go unmarshall(index)
-		go filter()
-	}
-	for index := 0; index < *writers; index++ {
-		go write(index)
-	}
+	go monitor()
 
-	// feed raw pointers for mongo iteration
-	for index := 0; index < *iterators; index++ {
-		var currentRaw bson.Raw
-		allChannels.inRaws <- &currentRaw
-	}
-
-	go display()
-
-	for i := 0; i < *pages; i++ {
-		go iterate()
+	for page := 0; page < *pages; page++ {
+		go iterate(page)
 	}
 
 	var firstDoc map[string]interface{}
@@ -267,16 +239,7 @@ func main() {
 	}
 	durationId := time.Now().Sub(startTimeId)
 	fmt.Printf("duration for reading all ids: %s\n", durationId.String())
-	/**
-	if *pages > 1 {
-		pageLimit := *limit / *pages
-		for page := 0; page < *pages; page++ {
-			go iterate(db.C(*coll).Find(nil).Prefetch(*prefetch).Batch(*batch).Skip(page*pageLimit).Limit(pageLimit).Iter(), page)
-		}
-	} else {
-		go iterate(db.C(*coll).Find(nil).Prefetch(*prefetch).Batch(*batch).Limit(*limit).Iter(), 0)
-	}
-	*/
+
 	fmt.Println("start iteration from mongo")
 	for i := 0; i < *pages; i++ {
 		<-allChannels.pages
