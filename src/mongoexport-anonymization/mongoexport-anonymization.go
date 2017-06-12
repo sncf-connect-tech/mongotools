@@ -1,16 +1,17 @@
 package main
 
 import (
-	"time"
-	"strconv"
-	"flag"
-	"gopkg.in/mgo.v2/bson"
-	"fmt"
-	"os"
-	"gopkg.in/mgo.v2"
-	"log"
 	"encoding/json"
+	"flag"
+	"fmt"
+	"log"
+	"os"
 	"path/filepath"
+	"strconv"
+	"time"
+
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type counter struct {
@@ -25,6 +26,7 @@ type channels struct {
 	inUnmarshalledDocs chan bson.M
 	pages              chan bool
 	filters            chan bson.M
+	lastIds            chan string // channel for last ids
 }
 
 var (
@@ -34,14 +36,14 @@ var (
 	iterators     = flag.Int("iterators", 20, "number of iterators")
 	unmarshallers = flag.Int("unmarshallers", 20, "number of unmarshallers")
 	writers       = flag.Int("writers", 40, "number of writers")
-	limit         = flag.Int("limit", 1000, "number max of documents")
-	pages         = flag.Int("pages", 1, "number of parallel mongo queries. For each page query, limit will be 'limit/pages'.")
+	limit         = flag.Int("limit", 100000, "number max of documents")
+	pages         = flag.Int("pages", 10, "number of parallel mongo queries. For each page query, limit will be 'limit/pages'.")
 	batch         = flag.Int("batch", 100, "batch size for mongo requests")
 	prefetch      = flag.Float64("prefetch", 0.5, "prefetch ratio from batch for mongo requests")
 	output        = flag.String("output", "./results/", "path to output directory")
 	prefix        = flag.String("prefix", "export-", "prefix of result files")
 	help          = flag.Bool("help", false, "help")
-	counters      = &counter{iterations:0, unmarshalledDocs:0, writedDocs:0}
+	counters      = &counter{iterations: 0, unmarshalledDocs: 0, writedDocs: 0}
 	stopped       = false
 	allChannels   = &channels{}
 )
@@ -116,7 +118,6 @@ func unmarshall(index int) {
 		raw.Unmarshal(&unmarshalledDoc)
 		counters.unmarshalledDocs++
 		allChannels.inUnmarshalledDocs <- unmarshalledDoc
-		allChannels.inRaws <- raw
 	}
 	fmt.Printf("end of unmarshalling docs: %v\n", index)
 	panic("shouldn't stop to unmarshall documents")
@@ -137,11 +138,11 @@ func write(index int) {
 }
 
 func display() {
-	oldCounter := &counter{writedDocs: counters.writedDocs, iterations:counters.iterations, unmarshalledDocs:counters.unmarshalledDocs}
+	oldCounter := &counter{writedDocs: counters.writedDocs, iterations: counters.iterations, unmarshalledDocs: counters.unmarshalledDocs}
 	for {
-		currentCounter := &counter{writedDocs: counters.writedDocs, iterations:counters.iterations, unmarshalledDocs:counters.unmarshalledDocs}
+		currentCounter := &counter{writedDocs: counters.writedDocs, iterations: counters.iterations, unmarshalledDocs: counters.unmarshalledDocs}
 		fmt.Printf("read docs: %d, unmarshalled docs: %d, writed docs: %d, ", currentCounter.iterations-oldCounter.iterations, currentCounter.unmarshalledDocs-oldCounter.unmarshalledDocs, currentCounter.writedDocs-oldCounter.writedDocs)
-		fmt.Printf("waiting docs: %d, waiting to unmarshall docs: %d, waiting to write docs: %d\n", len(allChannels.inRaws), len(allChannels.outRaws), len(allChannels.inUnmarshalledDocs))
+		fmt.Printf("waiting to unmarshall docs: %d, waiting to write docs: %d\n", len(allChannels.outRaws), len(allChannels.inUnmarshalledDocs))
 		if stopped {
 			break
 		}
@@ -150,7 +151,7 @@ func display() {
 	}
 }
 
-func iterate(iter *mgo.Iter, page int) {
+func iterate2(iter *mgo.Iter, page int) {
 	var currentRaw *bson.Raw
 	currentRaw = <-allChannels.inRaws
 	for iter.Next(currentRaw) {
@@ -160,6 +161,38 @@ func iterate(iter *mgo.Iter, page int) {
 	}
 	allChannels.pages <- true
 	fmt.Printf("end of mongo page %d \n", page)
+}
+
+func iterate() {
+	pageLimit := *limit / *pages
+	lastId := <-allChannels.lastIds
+	fmt.Printf("start iteration from id: %s\n", lastId)
+	db := createDB()
+	iter := db.C(*coll).Find(bson.M{"_id": bson.M{"$gte": lastId}}).Prefetch(*prefetch).Batch(*batch).Sort("_id").Limit(pageLimit).Iter()
+
+	var currentRaw bson.Raw
+	for iter.Next(&currentRaw) {
+		counters.iterations++
+		allChannels.outRaws <- &currentRaw
+	}
+	allChannels.pages <- true
+	fmt.Printf("end of mongo page %s \n", lastId)
+
+}
+
+func createDB() *mgo.Database {
+	session, err := mgo.Dial(*uri)
+	if err != nil {
+		panic(err)
+	}
+
+	session.SetSafe(nil)
+	session.SetBatch(*batch)
+	session.SetPrefetch(*prefetch)
+	session.SetBypassValidation(true)
+	session.SetMode(mgo.SecondaryPreferred, false)
+	db := session.DB(*dbName)
+	return db
 }
 
 func main() {
@@ -193,6 +226,7 @@ func main() {
 	allChannels.inUnmarshalledDocs = make(chan bson.M, *writers)
 	allChannels.filters = make(chan bson.M, 10)
 	allChannels.pages = make(chan bool)
+	allChannels.lastIds = make(chan string, *pages)
 
 	for index := 0; index < *unmarshallers; index++ {
 		go unmarshall(index)
@@ -210,15 +244,39 @@ func main() {
 
 	go display()
 
+	for i := 0; i < *pages; i++ {
+		go iterate()
+	}
+
+	var firstDoc map[string]interface{}
+
+	db.C(*coll).Find(nil).Prefetch(*prefetch).Batch(*batch).Sort("_id").Limit(1).Select(bson.M{"_id": 1}).One(&firstDoc)
+	firstId := firstDoc["_id"].(string)
+	fmt.Printf("firstId: %s\n", firstId)
+
+	lastId := firstId
+	pageLimit := *limit / *pages
+	startTimeId := time.Now()
+	for i := 0; i < *pages; i++ {
+		allChannels.lastIds <- lastId
+		iter := db.C(*coll).Find(bson.M{"_id": bson.M{"$gte": lastId}}).Prefetch(*prefetch).Batch(*batch).Sort("_id").Select(bson.M{"_id": 1}).Limit(pageLimit).Iter()
+		for iter.Next(&firstDoc) {
+			lastId = firstDoc["_id"].(string)
+		}
+		fmt.Printf("last id=%s\n", lastId)
+	}
+	durationId := time.Now().Sub(startTimeId)
+	fmt.Printf("duration for reading all ids: %s\n", durationId.String())
+	/**
 	if *pages > 1 {
 		pageLimit := *limit / *pages
 		for page := 0; page < *pages; page++ {
-			go iterate(db.C(*coll).Find(nil).Prefetch(*prefetch).Batch(*batch).Skip(page * pageLimit).Limit(pageLimit).Iter(), page)
+			go iterate(db.C(*coll).Find(nil).Prefetch(*prefetch).Batch(*batch).Skip(page*pageLimit).Limit(pageLimit).Iter(), page)
 		}
 	} else {
 		go iterate(db.C(*coll).Find(nil).Prefetch(*prefetch).Batch(*batch).Limit(*limit).Iter(), 0)
 	}
-
+	*/
 	fmt.Println("start iteration from mongo")
 	for i := 0; i < *pages; i++ {
 		<-allChannels.pages
