@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -145,7 +146,8 @@ func iterate(page int) {
 	fmt.Printf("will write to file %s\n", fileName)
 	os.Mkdir(*output, os.ModeDir)
 	out, _ := os.Create(fileName)
-	enc := json.NewEncoder(out)
+	writer := bufio.NewWriter(out)
+	enc := json.NewEncoder(writer)
 	defer out.Sync()
 	defer out.Close()
 
@@ -160,6 +162,7 @@ func iterate(page int) {
 		filter(unmarshalledDoc)
 		enc.Encode(&unmarshalledDoc)
 	}
+	writer.Flush()
 
 	allChannels.pages <- true
 	fmt.Printf("%d iteration(s) from id %s \n", itCnt, lastId)
