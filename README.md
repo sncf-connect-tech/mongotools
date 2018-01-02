@@ -15,35 +15,35 @@ Mongo tools used at VSCT.
 * [go installation](https://golang.org/doc/install)
 
 
-## Build
+## Downloads
+
+You can find releases [here](https://github.com/voyages-sncf-technologies/mongotools/releases).
 
 
 ### Build 
-    
-    $ GOPATH=$PWD go build mongostat-parser 
-    $ GOPATH=$PWD go build mongostat-lag 
-    $ GOPATH=$PWD go build mongooplog-window 
-    $ GOPATH=$PWD go build mongooplog-tail 
-    $ GOPATH=$PWD go build mongoexport-anonymization 
+
+    $ go build github.com/voyages-sncf-technologies/mongotools/cmd/mongoanonymize
 
 ## Tools
 
+### mongoanonymize
+
+Anonymize documents and export them to file or other collection (cf. [README](cmd/mongoanonymize/README.md)).
+
+## Tools (WIP)
+
 ### mongostat-lag
 
-Compute the lag between master and slaves (cf. [README](mongostat-lag/README.md)).
+Compute the lag between master and slaves (cf. [README](cmd/mongostat-lag/README.md)).
 
 ### mongostat-parser
 
-Parses json output of mongostat and returns in according to a template (cf. [README](mongostat-parser/README.md)).
+Parses json output of mongostat and returns in according to a template (cf. [README](cmd/mongostat-parser/README.md)).
 
 ### mongooplog-window
 
-Give the oplog time window between first and last oplog (cf. [README](mongooplog-window/README.md)).
+Give the oplog time window between first and last oplog (cf. [README](cmd/mongooplog-window/README.md)).
 
 ### mongooplog-tail
 
-A tail on oplog collection with common feature of a `tail` as filtering (cf. [README](mongooplog-tail/README.md)).
-
-### mongoexport-anonymization
-
-Anonymize documents and export them to file or other collection (cf. [README](mongoexport-anonymization/README.md)).
+A tail on oplog collection with common feature of a `tail` as filtering (cf. [README](cmd/mongooplog-tail/README.md)).
