@@ -21,12 +21,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/garnaud/doccleaner"
-  packages = ["."]
-  revision = "ae8ee8f7ffd93c2402f8efd93bfafe5b7b13d85e"
-
-[[projects]]
-  branch = "master"
   name = "github.com/gin-contrib/sse"
   packages = ["."]
   revision = "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
@@ -188,6 +182,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4d7d6380db88d1a1169194b2b144127e730a1f30cd8861e0a2c775b9f7f5442f"
+  inputs-digest = "d9177e80eab5ceaba42ee5bdb68e640d92099be668d33f110c9792c33dac8e57"
   solver-name = "gps-cdcl"
   solver-version = 1

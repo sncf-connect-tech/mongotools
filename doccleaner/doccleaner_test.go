@@ -1,6 +1,6 @@
 package doccleaner_test
 
-import "github.com/garnaud/doccleaner"
+import "github.com/voyages-sncf-technologies/mongotools/doccleaner"
 import "encoding/json"
 
 import "gopkg.in/mgo.v2/bson"
