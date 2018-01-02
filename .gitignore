@@ -4,3 +4,5 @@ mongostat-parser/mongostat-parser
 tmp/
 build/
 .idea
+pkg/
+vendor/

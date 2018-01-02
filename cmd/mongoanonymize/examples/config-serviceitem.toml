@@ -1,0 +1,85 @@
+["contactInformation.firstname"]
+"method"="set"
+"args" = [ "firstname" ]
+["contactInformation.name"]
+"method"="set"
+"args" = [ "name" ]
+["contactInformation.emailAddress"]
+"method"="set"
+"args" = [ "toto@toto.fr" ]
+["contactInformation.address1"]
+"method"="set"
+"args" = [ "address1" ]
+["contactInformation.address2"]
+"method"="set"
+"args" = [ "address2" ]
+["contactInformation.address3"]
+"method"="set"
+"args" = [ "address3" ]
+["contactInformation.address4"]
+"method"="set"
+"args" = [ "address4" ]
+["contactInformation.city"]
+"method"="set"
+"args" = [ "city" ]
+["contactInformation.zipCode"]
+"method"="set"
+"args" = [ "zipCode" ]
+["contactInformation.country"]
+"method"="set"
+"args" = [ "country" ]
+["contactInformation.mobilePhoneNumber"]
+"method"="set"
+"args" = [ "0123456789" ]
+["contactInformation.landlinePhoneNumbers"]
+"method"="nil"
+["passengers.emailAddress"]
+"method"="set"
+"args" = [ "toto@toto.fr" ]
+["passengers.iuc"]
+"method"="set"
+"args" = [ "iuc" ]
+["passengers.firstName"]
+"method"="set"
+"args" = [ "firstName" ]
+["passengers.lastName"]
+"method"="set"
+"args" = [ "lastName" ]
+["passengers.mobilePhoneNumber"]
+"method"="set"
+"args" = ["0123456789" ]
+["passengers.fceNumber"]
+"method"="set"
+"args"=["fceNumber"]
+["passengers.mrcNumber"]
+"method"="nil"
+["passengers.birthDate"]
+"method"="date"
+"args"=["Jan 2 15:04:05 -0700 MST 2006", "Jan 1 00:00:00 -0100 MST 1900"]
+["passengers.clientInformations.fidNumber"]
+"method"="set"
+"args"=["xxx"]
+["passengers.clientCard.cardNumber"]
+"method"="set"
+"args"=["xxx"]
+["passengers.sncfAgentAdditionalProperties.agentId"]
+"method"="set"
+"args"=["xxx"]
+["railTransportationContracts.holder.firstName"]
+"method"="set"
+"args"=["prenom"]
+["railTransportationContracts.holder.lastName"]
+"method"="set"
+"args"=["nom"]
+["vehicleOwner.iuc"]
+"method"="set"
+"args"=["xxx"]
+["vehicleOwner.firstName"]
+"method"="set"
+"args"=["prenom"]
+["vehicleOwner.lastName"]
+"method"="set"
+"args"=["nom"]
+["vehicles.plateNumber"]
+"method"="set"
+"args"=["xxx"]

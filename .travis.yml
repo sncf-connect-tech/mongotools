@@ -1,12 +1,8 @@
 language: go
 go:
-  - 1.7
+  - 1.9
 script:
-  - go build mongooplog-tail
-  - go build mongooplog-window
-  - go build mongostat-collection
-  - go build mongostat-lag
-  - go build mongostat-parser
-  - go build mongoexport-anonymization
+  - go test -v github.com/voyages-sncf-technologies/mongotools/cmd/...
+  - go build -v github.com/voyages-sncf-technologies/mongotools/cmd/...
 install:
   - export GOPATH="${TRAVIS_BUILD_DIR}"

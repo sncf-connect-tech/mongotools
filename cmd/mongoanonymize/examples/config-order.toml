@@ -1,0 +1,120 @@
+# customers
+
+["customers.iuc"]
+"method"="set"
+"args" = ["xxx"]
+["customers.firstname"]
+"method"="set"
+"args" = [ "prenom" ]
+["customers.lastname"]
+"method"="set"
+"args" = [ "nom" ]
+
+# ownerCustomer
+["ownerCustomer.iuc"]
+"method"="set"
+"args" = [ "xxx" ]
+
+# service item
+# contactInformation
+["serviceItems.contactInformation.firstname"]
+"method"="set"
+"args" = [ "firstname" ]
+["serviceItems.contactInformation.name"]
+"method"="set"
+"args" = [ "name" ]
+["serviceItems.contactInformation.emailAddress"]
+"method"="set"
+"args" = [ "tata@toto.fr" ]
+["serviceItems.contactInformation.address1"]
+"method"="set"
+"args" = [ "address1" ]
+["serviceItems.contactInformation.address2"]
+"method"="set"
+"args" = [ "address2" ]
+["serviceItems.contactInformation.address3"]
+"method"="set"
+"args" = [ "address3" ]
+["serviceItems.contactInformation.address4"]
+"method"="set"
+"args" = [ "address4" ]
+["serviceItems.contactInformation.city"]
+"method"="set"
+"args" = [ "city" ]
+["serviceItems.contactInformation.zipCode"]
+"method"="set"
+"args" = [ "zipCode" ]
+["serviceItems.contactInformation.country"]
+"method"="set"
+"args" = [ "country" ]
+["serviceItems.contactInformation.mobilePhoneNumber"]
+"method"="set"
+"args" = [ "0123456789" ]
+["serviceItems.contactInformation.landlinePhoneNumbers"]
+"method"="nil"
+
+# contactInformation
+["contactInformation.emailAddress"]
+"method"="set"
+"args" = [ "tata@toto.fr" ]
+
+# passengers
+["serviceItems.passengers.emailAddress"]
+"method"="set"
+"args" = [ "tata@toto.fr" ]
+["serviceItems.passengers.iuc"]
+"method"="set"
+"args" = [ "iuc" ]
+["serviceItems.passengers.firstName"]
+"method"="set"
+"args" = [ "firstName" ]
+["serviceItems.passengers.lastName"]
+"method"="set"
+"args" = [ "lastName" ]
+["serviceItems.passengers.mobilePhoneNumber"]
+"method"="set"
+"args" = ["0123456789" ]
+["serviceItems.passengers.fceNumber"]
+"method"="set"
+"args"=["fceNumber"]
+["serviceItems.passengers.mrcNumber"]
+"method"="nil"
+["serviceItems.passengers.birthDate"]
+"method"="date"
+"args"=["Jan 2 15:04:05 -0700 MST 2006", "Jan 1 00:00:00 -0100 MST 1900"]
+["serviceItems.passengers.clientInformations.fidNumber"]
+"method"="set"
+"args"=["xxx"]
+["serviceItems.passengers.clientCard.cardNumber"]
+"method"="set"
+"args"=["xxx"]
+["serviceItems.passengers.sncfAgentAdditionalProperties.agentId"]
+"method"="set"
+"args"=["xxx"]
+
+# railTransportationContracts
+["serviceItems.railTransportationContracts.holder.firstName"]
+"method"="set"
+"args"=["prenom"]
+["serviceItems.railTransportationContracts.holder.lastName"]
+"method"="set"
+"args"=["nom"]
+
+# vehicleOwner
+["serviceItems.vehicleOwner.iuc"]
+"method"="set"
+"args"=["xxx"]
+["serviceItems.vehicleOwner.firstName"]
+"method"="set"
+"args"=["prenom"]
+["serviceItems.vehicleOwner.lastName"]
+"method"="set"
+"args"=["nom"]
+
+# vehicles
+["serviceItems.vehicles.plateNumber"]
+"method"="set"
+"args"=["xxx"]
+
+
+
