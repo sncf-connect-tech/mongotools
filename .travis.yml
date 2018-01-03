@@ -2,6 +2,13 @@ language: go
 sudo: required
 go:
 - 1.9
+env:
+  global:
+    - GOARCH=amd64
+  matrix:
+    - GOOS=linux
+    - GOOS=darwin
+    - GOOS=windows
 before_install:
 - go get -u github.com/golang/dep/cmd/dep
 before_script:
@@ -9,7 +16,7 @@ before_script:
 - go test -v  -coverprofile=coverage.txt -covermode=atomic github.com/voyages-sncf-technologies/mongotools/cmd/mongoanonymize
 - mkdir build
 script:
-- go build -o build/mongoanonymize-${TRAVIS_TAG:1:100} github.com/voyages-sncf-technologies/mongotools/cmd/mongoanonymize
+- go build -o build/mongoanonymize-${GOOS}-${TRAVIS_TAG:1:100} github.com/voyages-sncf-technologies/mongotools/cmd/mongoanonymize
 - ls -l build/
 after_success:
 - bash <(curl -s https://codecov.io/bash)
@@ -22,3 +29,4 @@ deploy:
   file: build/*
   on:
     tags: true
+    branch: master
