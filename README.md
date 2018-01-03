@@ -1,6 +1,9 @@
+[![Build Status](https://travis-ci.org/voyages-sncf-technologies/mongotools.svg?branch=ci%2Frefacto)](https://travis-ci.org/voyages-sncf-technologies/mongotools)
+[![codecov](https://codecov.io/gh/voyages-sncf-technologies/mongotools/branch/master/graph/badge.svg)](https://codecov.io/gh/voyages-sncf-technologies/mongotools)
+
 # Mongo tools
 
-Mongo tools used at VSCT.
+Mongo tools developped and used at VSCT.
 
 ## Guidelines
 
@@ -30,7 +33,7 @@ You can find releases [here](https://github.com/voyages-sncf-technologies/mongot
 
 Anonymize documents and export them to file or other collection (cf. [README](cmd/mongoanonymize/README.md)).
 
-## Tools (WIP)
+## Tools (Work In Progress)
 
 ### mongostat-lag
 
