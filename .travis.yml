@@ -1,22 +1,21 @@
 language: go
 sudo: required
 go:
-  - 1.9
+- 1.9
 before_install:
-  - go get -u github.com/golang/dep/cmd/dep
+- go get -u github.com/golang/dep/cmd/dep
 before_script:
-  - dep ensure -update
-  - go test -v  -coverprofile=coverage.txt -covermode=atomic github.com/voyages-sncf-technologies/mongotools/cmd/mongoanonymize
-  - mkdir build
+- dep ensure -update
+- go test -v  -coverprofile=coverage.txt -covermode=atomic github.com/voyages-sncf-technologies/mongotools/cmd/mongoanonymize
+- mkdir build
 script:
-  - go build -o build/mongoanonymize-${TRAVIS_TAG:1:100} github.com/voyages-sncf-technologies/mongotools/cmd/mongoanonymize
-deploy:
-  - provider: releases
-    api_key:
-      secure: N8vJT1UCWSCDNLY4LwdfCHTeeWqqcOVpuL/c+gjHdgeNXCqtyn496t7/L1IgTCcQPjIL9vXiFQ0ubLa9/xBjcG2hor++9Yi9pvqqyZZldhiaLi6lI2wOfWO7METZgcP1U9+Sv5ZfzAHOp3I2kaaVJMedZQnbuo2kKFbCE4o8cz9ItmaDUxRHoHFwzCpOSDeyCV9Mk2RweX0AOnO6MfxTPZILj9IF4+QhzywmT0MJN5vaBLgr+SCPI5QgFdNIgIL+fwgTIzmRua0b2ajW6MAD/jgDAHavo92W1TbS27pwz4t9q/v94vDwjCIGEuYaysQqijwZyVNxhZwBuFN9CWI0rszwZP4jO37jc4VpdBa2/czY37a7p37le+cVpwavqrESi+iCek+nZzED1pyjyxtPFbML52Mqw8tUPX8GfveWBtZwNB6wq5+7XZT37gyIEkZaYdrdvfEpFmVVLmIyEGEBAYgywZ48DI3QAI7SIiRHUJlcRlB+zPN/wg/EKawiOk/7Bdr4aWUsNPSRQUBUxIj+frmwKNXHvlRSJzER4oQY6rTlwDcvDzKQTT7vxfcd5ZVZXgwKwnEGosyXGhc0o3ZwYzZGhbQGh8HVEu9FKgVtQXCjz2J38SMsP0qJRk8ug5bNL6dxH/oNziWzPOvldOHbs/ex9uTSygCvS7hcB35800A=
-    file: "build/mongoanonymize-${TRAVIS_TAG:1:100}"
-    skip_cleanup: true
-    on:
-      tags: true
+- go build -o build/mongoanonymize-${TRAVIS_TAG:1:100} github.com/voyages-sncf-technologies/mongotools/cmd/mongoanonymize
 after_success:
-  - bash <(curl -s https://codecov.io/bash) 
+- bash <(curl -s https://codecov.io/bash)
+deploy:
+  provider: releases
+  api_key:
+    secure: kYli89C/uwozhxRZHjeIAId+ISlFqA60Hl5N7yoH+91NlDvJlP1aeQp88/XfddAEkRMRf0HREhdBFNHoBXnsakKnKCcK/41eWImLUcDk+NXac9D0gS5bme0bCk0Dg8zEDvm/77ZAKanN7DP2H/LdCrjzi3BMaTyqvVJbl7uL+e1bGXf7QPxcFshKl/bVkINQo49BhOjUT0Op3pA2kIBvQt6+cDwsNybAiNIzT7u021TC+A9nUhGXTlsvEZt6+qZsWOjt0CgfZgawOPWJi8bPpjT4LlLyNbhFgODk2pFIvc7EXtfgVAJ1Jy5BMCm0h9rUco2Wmn0Z7vKRkB/fA9qRZGnvvA98vMVPNNhC9KvE50htpJIqiuBHGc5+eHPuEh5Zf5ktpLU6FX5MimiJcWYOLSRr9g9KhpLCYMtp2WPzJY0PclGHkPAFPysg+xqpi6BY93bJ7W7791GRLkYwNRu0f9Utr29ZYpDRqviuJo0io8WxWxb+LY/48rCJRxJimYElqMVg8Lj5zeoSCXL2zSTyWLJDBEc9fdpiAiqnx3oHwc4yn8FGEHOCWeDPXQNsWckIAS4MQWK0u0jSjTS/jqIBTKk/k+EZrh8u9iZ9/9YZ7FxZNUjci5uFkbMWzh8kR4P1xzDDJdzLEp2w8QZFSK6FxXYzBZ2KhqCvAvJOfRoUFkI=
+  file: build/mongoanonymize-${TRAVIS_TAG:1:100}
+  on:
+    repo: voyages-sncf-technologies/mongotools
