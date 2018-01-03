@@ -6,7 +6,7 @@ before_install:
   - go get -u github.com/golang/dep/cmd/dep
 before_script:
   - dep ensure -update
-  - go test -v  -coverprofile=coverage.txt -covermode=atomic github.com/voyages-sncf-technologies/mongotools/...
+  - go test -v  -coverprofile=coverage.txt -covermode=atomic github.com/voyages-sncf-technologies/mongotools/cmd/mongoanonymize
   - mkdir build
 script:
   - go build -o build/mongoanonymize-${TRAVIS_TAG:1:100} github.com/voyages-sncf-technologies/mongotools/cmd/mongoanonymize
