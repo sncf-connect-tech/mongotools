@@ -18,6 +18,5 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
-      repo: voyages-sncf-technologies/mongotools/cmd/mongoanonymize
 after_success:
   - bash <(curl -s https://codecov.io/bash) 
