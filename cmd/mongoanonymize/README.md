@@ -59,7 +59,8 @@ A toml configuration file allows to set fields to anonymize (_./config.toml_ by 
 
 ["field.date.to.change"]
 "method"="date"
-"args"=["Jan 2 15:04:05 -0700 MST 2006", "Jan 1 00:00:00 -0100 MST 1900"]
+# first argument is date format, second argument is forced date
+"args"=["Jan 2 15:04:05 -0700 MST 2006", "Jan 1 00:00:00 -0100 MST 1900"] 
 ```
 
 
