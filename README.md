@@ -22,7 +22,7 @@ You can find releases [here](https://github.com/voyages-sncf-technologies/mongot
 
 ### Build from source
 
-##### Requirements
+#### Requirements
 
 
 You need a [go installation](https://golang.org/doc/install) (>= 1.9).
@@ -33,7 +33,7 @@ We use the official go package manager [dep](https://github.com/golang/dep). For
 
 You need too to add $GOPATH/bin in your binary path (certainly _$PATH_ variable).
 
-###### Downloading and building mongotools
+#### Downloading and building mongotools
 
 For downloading the project, you can use _go get_:
 
@@ -56,6 +56,7 @@ If you want (re)install one application:
 
     $ go install github.com/voyages-sncf-technologies/mongotools/cmd/mongoanonymize
     
+
 ## Tools
 
 ### mongoanonymize
@@ -63,6 +64,8 @@ If you want (re)install one application:
 Anonymize documents and export them to file or other collection (cf. [README](cmd/mongoanonymize/README.md)).
 
 ## Tools (Work In Progress)
+
+Currently, these applications need to be improved or re-validated.
 
 ### mongostat-lag
 
