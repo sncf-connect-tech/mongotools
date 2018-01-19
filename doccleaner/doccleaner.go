@@ -3,12 +3,13 @@ package doccleaner
 import (
 	"errors"
 	"fmt"
-	"github.com/BurntSushi/toml"
-	"github.com/davecgh/go-spew/spew"
-	"gopkg.in/mgo.v2/bson"
 	"io"
 	"strings"
 	"time"
+
+	"github.com/BurntSushi/toml"
+	"github.com/davecgh/go-spew/spew"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // DocCleaner contains config cleaners
@@ -159,16 +160,20 @@ func (n Nil) Clean(value interface{}, args ...interface{}) (changed interface{},
 
 // Date type allowed to replace current value by a date
 type Date struct {
+	time time.Time
 }
 
 // Clean value by a date. Will use method time.Parse(args[0], args[1]).
-func (d Date) Clean(value interface{}, args ...interface{}) (changed interface{}, err error) {
+func (d *Date) Clean(value interface{}, args ...interface{}) (changed interface{}, err error) {
 	if len(args) != 2 {
 		return nil, nil
 	}
-	t, err := time.Parse(args[0].(string), args[1].(string))
+	if d.time.IsZero() {
+		t, _ := time.Parse(args[0].(string), args[1].(string))
+		d.time = t
+	}
 
-	return t, err
+	return d.time, err
 }
 
 // clean object and apply clean functions on leaves
