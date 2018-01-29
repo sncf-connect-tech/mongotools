@@ -236,12 +236,12 @@ func BenchmarkAnonymize(b *testing.B) {
 "method"="set"
 "args"=["xxx"]
 
-#["serviceItems.passengers.birthDate"]
-#"method"="date"
-#"args"=["Jan 2 15:04:05 -0700 MST 2006", "Jan 1 00:00:00 -0100 MST 1900"]
-#["passengers.birthDate"]
-#"method"="date"
-#"args"=["Jan 2 15:04:05 -0700 MST 2006", "Jan 1 00:00:00 -0100 MST 1900"]
+["serviceItems.passengers.birthDate"]
+"method"="date"
+"args"=["Jan 2 15:04:05 -0700 MST 2006", "Jan 1 00:00:00 -0100 MST 1900"]
+["passengers.birthDate"]
+"method"="date"
+"args"=["Jan 2 15:04:05 -0700 MST 2006", "Jan 1 00:00:00 -0100 MST 1900"]
 
 
 ["contactInformation.emailAddress"]
