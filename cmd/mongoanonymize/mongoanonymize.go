@@ -35,7 +35,7 @@ type channels struct {
 	outRaws  chan *bson.Raw // channel from unmarshalling steps to writing step
 	pages    chan bool
 	filters  chan bson.M
-	firstIds chan string // channel for last ids
+	firstIds chan interface{} // channel for last ids
 }
 
 // Closeabe type for easily close all resources
@@ -100,7 +100,7 @@ func monitor() {
 }
 
 // iterate on given page. A page is part a of the whole collection.
-func iterate(page int, firstId string) {
+func iterate(page int, firstId interface{}) {
 	pageLimit := int(math.Ceil(float64(*limit) / float64(*pages)))
 	fmt.Printf("[%d] start iteration from mongo _id: %s\n", page, firstId)
 	db := createDB()
@@ -212,7 +212,7 @@ func main() {
 
 	allChannels.filters = make(chan bson.M, 10)
 	allChannels.pages = make(chan bool)
-	allChannels.firstIds = make(chan string, *pages)
+	allChannels.firstIds = make(chan interface{}, *pages)
 
 	if *monitored {
 		go monitor()
@@ -241,10 +241,19 @@ func main() {
 		iter := db.C(*coll).Find(nil).Sort("_id").Select(bson.M{"_id": 1}).Prefetch(*prefetch).Batch(*batch).Limit(*limit).Iter()
 		idx := 0
 		page := 0
-		firstIds := make([]string, *pages)
+		firstIds := make([]interface{}, *pages)
 		for iter.Next(&firstDoc) {
 			if firstDoc != nil && math.Mod(float64(idx), float64(pageLimit)) == 0.0 {
-				firstIds[page] = firstDoc["_id"].(string)
+
+				switch firstDoc["_id"].(type) {
+				case string:
+					firstIds[page] = firstDoc["_id"].(string)
+				case bson.ObjectId:
+					firstIds[page] = firstDoc["_id"].(bson.ObjectId)
+				default:
+					fmt.Errorf("object id is not a string or bson.ObjectId. Type: %T, Value: %+v", firstDoc["_id"], firstDoc["_id"])
+					panic("can't go on")
+				}
 				page = page + 1
 			}
 			if idx >= *limit {
